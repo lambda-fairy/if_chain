@@ -5,9 +5,20 @@
 //! disjunctive patterns (e.g. `if let Foo(a) | Bar(a) = b`) in places where
 //! Rust would normally not allow them.
 //!
+//! # Note about recursion limits
+//!
+//! If you run into "recursion limit reached" errors while using this macro, try
+//! adding
+//!
+//! ```rust,ignore
+//! #![recursion_limit = "1000"]
+//! ```
+//!
+//! to the top of your crate.
+//!
 //! # Examples
 //!
-//! ## Basic example
+//! ## Quick start
 //!
 //! ```rust,ignore
 //! if_chain! {
