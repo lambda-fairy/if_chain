@@ -1,9 +1,13 @@
 //! This crate provides a single macro called `if_chain!`.
 //!
 //! `if_chain!` lets you write long chains of nested `if` and `if let`
-//! statements without the associated rightward drift. It also supports
-//! disjunctive patterns (e.g. `if let Foo(a) | Bar(a) = b`) in places where
-//! Rust would normally not allow them.
+//! statements without the associated rightward drift. It also supports multiple
+//! patterns (e.g. `if let Foo(a) | Bar(a) = b`) in places where Rust would
+//! normally not allow them.
+//!
+//! See the associated [blog post] for the background behind this crate.
+//!
+//! [blog post]: https://lambda.xyz/blog/if-chain
 //!
 //! # Note about recursion limits
 //!
@@ -95,7 +99,7 @@
 //! }
 //! ```
 //!
-//! ## Disjunctive patterns
+//! ## Multiple patterns
 //!
 //! ```rust,ignore
 //! if_chain! {
