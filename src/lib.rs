@@ -123,6 +123,8 @@
 //! Note that if you use a plain `let`, then `if_chain!` assumes that the
 //! pattern is *irrefutable* (always matches) and doesn't add a fallback branch.
 
+#![cfg_attr(not(test), no_std)]
+
 /// Macro for writing nested `if let` expressions.
 ///
 /// See the crate documentation for information on how to use this macro.
