@@ -105,7 +105,7 @@
 //! if_chain! {
 //!     if let Foo(y) | Bar(y) | Baz(y) = x;
 //!     let Bubbles(z) | Buttercup(z) | Blossom(z) = y;
-//!     then { do_stuff_with(y) }
+//!     then { do_stuff_with(z) }
 //! }
 //! ```
 //!
