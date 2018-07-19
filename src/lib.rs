@@ -128,7 +128,7 @@
 /// Macro for writing nested `if let` expressions.
 ///
 /// See the crate documentation for information on how to use this macro.
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! if_chain {
     ($($tt:tt)*) => {
         __if_chain! { @init () $($tt)* }
@@ -136,7 +136,7 @@ macro_rules! if_chain {
 }
 
 #[doc(hidden)]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! __if_chain {
     (@init ($($tt:tt)*) then $then:block else $other:block) => {
         __if_chain! { @expand $other $($tt)* then $then }
