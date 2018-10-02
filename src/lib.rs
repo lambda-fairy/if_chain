@@ -99,6 +99,30 @@
 //! }
 //! ```
 //!
+//! ## Type ascription
+//! 
+//! ```rust,ignore
+//! let mut x = some_generic_computation();
+//! if_chain! {
+//!     if x > 7;
+//!     let y: u32 = another_generic_computation();
+//!     then { x += y }
+//!     else { x += 1 }
+//! }
+//! ```
+//! 
+//! becomes
+//! 
+//! ```rust,ignore
+//! let mut x = some_generic_computation();
+//! if x > 7 {
+//!     let y: u32 = another_generic_computation();
+//!     x += y
+//! } else {
+//!     x += 1
+//! }
+//! ```
+//! 
 //! ## Multiple patterns
 //!
 //! ```rust,ignore
@@ -151,6 +175,10 @@ macro_rules! __if_chain {
         match $expr {
             $($pat)|+ => __if_chain! { @expand $other $($tt)+ }
         }
+    };
+    (@expand $other:block let $ident:ident: $ty:ty = $expr:expr; $($tt:tt)+) => {
+        let $ident: $ty = $expr;
+        __if_chain! { @expand $other $($tt)+ }
     };
     (@expand $other:block if let $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
         match $expr {
@@ -235,5 +263,18 @@ mod tests {
             then { assert_eq!(x, 42); }
             else { panic!(); }
         }
+    }
+
+    #[test]
+    fn let_type_annotation_patterns() {
+        let mut x = 1;
+        if_chain! {
+            if x > 0;
+            let y: u32 = 2;
+
+            then { x += y; }
+            else { x += 1; }
+        };
+        assert_eq!(x, 3);
     }
 }
