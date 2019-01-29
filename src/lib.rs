@@ -162,44 +162,78 @@ macro_rules! if_chain {
 #[doc(hidden)]
 #[macro_export(local_inner_macros)]
 macro_rules! __if_chain {
-    (@init ($($tt:tt)*) then $then:block else $other:block) => {
-        __if_chain! { @expand $other $($tt)* then $then }
+    // Expand with both a successful case and a fallback
+    (@init ($($tt:tt)*) then { $($then:tt)* } else { $($other:tt)* }) => {
+        __if_chain! { @expand { $($other)* } $($tt)* then { $($then)* } }
     };
-    (@init ($($tt:tt)*) then $then:block) => {
-        __if_chain! { @expand {} $($tt)* then $then }
+    // Expand with no fallback
+    (@init ($($tt:tt)*) then { $($then:tt)* }) => {
+        __if_chain! { @expand {} $($tt)* then { $($then)* } }
     };
+    // Munch everything until either of the arms above can be matched.
+    // Munched tokens are placed into `$($tt)*`
     (@init ($($tt:tt)*) $head:tt $($tail:tt)*) => {
         __if_chain! { @init ($($tt)* $head) $($tail)* }
     };
-    (@expand $other:block let $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
-        match $expr {
-            $($pat)|+ => __if_chain! { @expand $other $($tt)+ }
+
+    // `let` with a single pattern
+    (@expand { $($other:tt)* } let $pat:pat = $expr:expr; $($tt:tt)+) => {
+        {
+            let $pat = $expr;
+            __if_chain! { @expand { $($other)* } $($tt)+ }
         }
     };
-    (@expand $other:block let $ident:ident: $ty:ty = $expr:expr; $($tt:tt)+) => {
-        let $ident: $ty = $expr;
-        __if_chain! { @expand $other $($tt)+ }
-    };
-    (@expand $other:block if let $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
-        match $expr {
-            $($pat)|+ => __if_chain! { @expand $other $($tt)+ },
-            _ => $other
+    // `let` with a single identifier and a type hint
+    (@expand { $($other:tt)* } let $ident:ident: $ty:ty = $expr:expr; $($tt:tt)+) => {
+        {
+            let $ident: $ty = $expr;
+            __if_chain! { @expand { $($other)* } $($tt)+ }
         }
     };
+    // `let` with multiple patterns
+    (@expand { $($other:tt)* } let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
+        match $expr {
+            $pat1 | $($pat)|+ => __if_chain! { @expand { $($other)* } $($tt)+ }
+        }
+    };
+    // `if let` with a single pattern
+    (@expand {} if let $pat:pat = $expr:expr; $($tt:tt)+) => {
+        if let $pat = $expr {
+            __if_chain! { @expand {} $($tt)+ }
+        }
+    };
+    // `if let` with a single pattern and a fallback
+    (@expand { $($other:tt)+ } if let $pat:pat = $expr:expr; $($tt:tt)+) => {
+        if let $pat = $expr {
+            __if_chain! { @expand { $($other)+ } $($tt)+ }
+        } else {
+            $($other)+
+        }
+    };
+    // `if let` with multiple matterns and a fallback (if present)
+    (@expand { $($other:tt)* } if let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
+        match $expr {
+            $pat1 | $($pat)|+ => { __if_chain! { @expand { $($other)* } $($tt)+ } },
+            _ => { $($other)* }
+        }
+    };
+    // `if` with a successful case
     (@expand {} if $expr:expr; $($tt:tt)+) => {
         if $expr {
             __if_chain! { @expand {} $($tt)+ }
         }
     };
-    (@expand $other:block if $expr:expr; $($tt:tt)+) => {
+    // `if` with both a successful case and a fallback
+    (@expand { $($other:tt)+ } if $expr:expr; $($tt:tt)+) => {
         if $expr {
-            __if_chain! { @expand $other $($tt)+ }
+            __if_chain! { @expand { $($other)+ } $($tt)+ }
         } else {
-            $other
+            $($other)+
         }
     };
-    (@expand $other:block then $then:block) => {
-        $then
+    // Final macro call
+    (@expand { $($other:tt)* } then { $($then:tt)* }) => {
+        $($then)*
     };
 }
 
