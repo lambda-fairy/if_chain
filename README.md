@@ -1,6 +1,6 @@
 # if_chain
 
-[![Build Status](https://img.shields.io/travis/lfairy/if_chain.svg)](https://travis-ci.org/lfairy/if_chain) [![Cargo](https://img.shields.io/crates/v/if_chain.svg)](https://crates.io/crates/if_chain)
+[![Build Status](https://travis-ci.com/lambda-fairy/if_chain.svg?branch=master)](https://travis-ci.com/lambda-fairy/if_chain) [![Cargo](https://img.shields.io/crates/v/if_chain.svg)](https://crates.io/crates/if_chain)
 
 This crate provides a single macro called `if_chain!`.
 
