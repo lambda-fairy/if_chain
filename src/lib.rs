@@ -100,7 +100,7 @@
 //! ```
 //!
 //! ## Type ascription
-//! 
+//!
 //! ```rust,ignore
 //! let mut x = some_generic_computation();
 //! if_chain! {
@@ -110,9 +110,9 @@
 //!     else { x += 1 }
 //! }
 //! ```
-//! 
+//!
 //! becomes
-//! 
+//!
 //! ```rust,ignore
 //! let mut x = some_generic_computation();
 //! if x > 7 {
@@ -122,7 +122,7 @@
 //!     x += 1
 //! }
 //! ```
-//! 
+//!
 //! ## Multiple patterns
 //!
 //! ```rust,ignore
