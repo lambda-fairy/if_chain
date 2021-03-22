@@ -323,11 +323,11 @@ mod tests {
     fn let_rebinding_values() {
         #[allow(unused_variables)]
         fn wat(seq: &[usize]) -> Got {
-            let mut seq = seq.iter().copied();
+            let mut seq = seq.iter();
             let dunno  = 0;
             if_chain! {
-                if let Some(dunno) = seq.next(); // unused binding
-                if let Some(dunno) = seq.next();
+                if let Some(&dunno) = seq.next(); // unused binding
+                if let Some(&dunno) = seq.next();
                 then { Then(dunno) }
                 else { Else(dunno) }
             }
