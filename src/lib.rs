@@ -338,4 +338,17 @@ mod tests {
         assert_eq!(Then(2), wat(&[ 1, 2    ]));
         assert_eq!(Then(2), wat(&[ 1, 2, 3 ]));
     }
+
+    #[test]
+    fn let_rebinding() {
+        let v = Some(Some(Some('a')));
+        if_chain! {
+            if let Some(v) = v;
+            if let Some(v) = v;
+            if let Some(v) = v;
+            if true;
+            then { let _: char = v; }
+            else { let _: Option<Option<Option<char>>> = v; }
+        };
+    }
 }
