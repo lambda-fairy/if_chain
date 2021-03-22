@@ -164,7 +164,10 @@ macro_rules! if_chain {
 macro_rules! __if_chain {
     // Expand with both a successful case and a fallback
     (@init ($($tt:tt)*) then { $($then:tt)* } else { $($other:tt)* }) => {
-        __if_chain! { @expand { $($other)* } $($tt)* then { $($then)* } }
+        match __if_chain! { @expand { None } $($tt)* then { Some({ $($then)* })} } {
+            Some(__if_chain_y) => __if_chain_y,
+            None => { $($other)* },
+        }
     };
     // Expand with no fallback
     (@init ($($tt:tt)*) then { $($then:tt)* }) => {
@@ -317,12 +320,13 @@ mod tests {
     }
 
     #[test]
-    fn weirdness() {
+    fn let_rebinding_values() {
+        #[allow(unused_variables)]
         fn wat(seq: &[usize]) -> Got {
             let mut seq = seq.iter().copied();
             let dunno  = 0;
             if_chain! {
-                if let Some(dunno) = seq.next();
+                if let Some(dunno) = seq.next(); // unused binding
                 if let Some(dunno) = seq.next();
                 then { Then(dunno) }
                 else { Else(dunno) }
@@ -330,7 +334,7 @@ mod tests {
         }
 
         assert_eq!(Else(0), wat(&[         ]));
-        assert_eq!(Else(1), wat(&[ 1       ]));
+        assert_eq!(Else(0), wat(&[ 1       ]));
         assert_eq!(Then(2), wat(&[ 1, 2    ]));
         assert_eq!(Then(2), wat(&[ 1, 2, 3 ]));
     }
