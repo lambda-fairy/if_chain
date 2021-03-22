@@ -239,6 +239,10 @@ macro_rules! __if_chain {
 
 #[cfg(test)]
 mod tests {
+    #[derive(Debug,Copy,Clone,Eq,PartialEq)]
+    enum Got { Then(usize), Else(usize) }
+    use self::Got::*;
+
     #[test]
     fn simple() {
         let x: Option<Result<Option<String>, (u32, u32)>> = Some(Err((41, 42)));
@@ -310,5 +314,24 @@ mod tests {
             else { x += 1; }
         };
         assert_eq!(x, 3);
+    }
+
+    #[test]
+    fn weirdness() {
+        fn wat(seq: &[usize]) -> Got {
+            let mut seq = seq.iter().copied();
+            let dunno  = 0;
+            if_chain! {
+                if let Some(dunno) = seq.next();
+                if let Some(dunno) = seq.next();
+                then { Then(dunno) }
+                else { Else(dunno) }
+            }
+        }
+
+        assert_eq!(Else(0), wat(&[         ]));
+        assert_eq!(Else(1), wat(&[ 1       ]));
+        assert_eq!(Then(2), wat(&[ 1, 2    ]));
+        assert_eq!(Then(2), wat(&[ 1, 2, 3 ]));
     }
 }
