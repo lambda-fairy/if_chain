@@ -325,4 +325,22 @@ mod tests {
         }
         f("foo");
     }
+
+    #[test]
+    fn no_move() {
+        struct NoCopy;
+        let new_record = NoCopy;
+        let mut store = None;
+        let returned = if_chain!{
+            if true;
+            then {
+                store = Some(new_record);
+                None
+            } else {
+                Some(new_record)
+            }
+        };
+        drop(returned);
+        drop(store);
+    }
 }
