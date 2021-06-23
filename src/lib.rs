@@ -191,7 +191,7 @@ macro_rules! __if_chain {
         }
     };
     // `let` with multiple patterns
-    (@expand { $($other:tt)* } let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
+    (@expand { $($other:tt)* } let $pat1:pat_param | $($pat:pat_param)|+ = $expr:expr; $($tt:tt)+) => {
         match $expr {
             $pat1 | $($pat)|+ => __if_chain! { @expand { $($other)* } $($tt)+ }
         }
@@ -211,7 +211,7 @@ macro_rules! __if_chain {
         }
     };
     // `if let` with multiple matterns and a fallback (if present)
-    (@expand { $($other:tt)* } if let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
+    (@expand { $($other:tt)* } if let $pat1:pat_param | $($pat:pat_param)|+ = $expr:expr; $($tt:tt)+) => {
         match $expr {
             $pat1 | $($pat)|+ => { __if_chain! { @expand { $($other)* } $($tt)+ } },
             _ => { $($other)* }
