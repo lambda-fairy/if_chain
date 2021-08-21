@@ -10,6 +10,3 @@ repository = "https://github.com/lambda-fairy/if_chain"
 description = "Macro for writing nested `if let` expressions."
 categories = ["rust-patterns", "no-std"]
 readme = "README.md"
-
-[badges]
-travis-ci = { repository = "lambda-fairy/if_chain" }
