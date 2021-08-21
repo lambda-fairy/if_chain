@@ -193,7 +193,7 @@ macro_rules! __if_chain {
     // `let` with multiple patterns
     (@expand { $($other:tt)* } let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
         match $expr {
-            $pat1 | $($pat)|+ => __if_chain! { @expand { $($other)* } $($tt)+ }
+            $pat1 | $($pat)|+ => { __if_chain! { @expand { $($other)* } $($tt)+ } }
         }
     };
     // `if let` with a single pattern
@@ -308,7 +308,7 @@ mod tests {
 
             then { x += y; }
             else { x += 1; }
-        };
+        }
         assert_eq!(x, 3);
     }
 }
