@@ -210,7 +210,7 @@ macro_rules! __if_chain {
             $($other)+
         }
     };
-    // `if let` with multiple matterns and a fallback (if present)
+    // `if let` with multiple patterns and a fallback (if present)
     (@expand { $($other:tt)* } if let $pat1:pat | $($pat:pat)|+ = $expr:expr; $($tt:tt)+) => {
         match $expr {
             $pat1 | $($pat)|+ => { __if_chain! { @expand { $($other)* } $($tt)+ } },
