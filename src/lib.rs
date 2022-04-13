@@ -1,5 +1,8 @@
 //! This crate provides a single macro called `if_chain!`.
 //!
+//! **If you're using Rust 1.62 or newer, check out [`if let` chains][rfc] instead.
+//! This crate is still available for earlier versions of Rust.**
+//!
 //! `if_chain!` lets you write long chains of nested `if` and `if let`
 //! statements without the associated rightward drift. It also supports multiple
 //! patterns (e.g. `if let Foo(a) | Bar(a) = b`) in places where Rust would
@@ -7,6 +10,7 @@
 //!
 //! See the associated [blog post] for the background behind this crate.
 //!
+//! [rfc]: https://github.com/rust-lang/rfcs/blob/master/text/2497-if-let-chains.md
 //! [blog post]: https://lambda.xyz/blog/if-chain
 //!
 //! # Note about recursion limits
