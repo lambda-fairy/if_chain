@@ -311,4 +311,36 @@ mod tests {
         }
         assert_eq!(x, 3);
     }
+
+    #[test]
+    fn magic_deref() {
+        fn f(y: &'static str) -> (&'static str, bool) {
+            let b: [&str; 1] = ["a"];
+            if_chain! {
+                if false;
+                if let Some(x) = b.get(1);
+                then { (x, true) }
+                else { (y, false) }
+            }
+        }
+        f("foo");
+    }
+
+    #[test]
+    fn no_move() {
+        struct NoCopy;
+        let new_record = NoCopy;
+        let mut store = None;
+        let returned = if_chain!{
+            if true;
+            then {
+                store = Some(new_record);
+                None
+            } else {
+                Some(new_record)
+            }
+        };
+        drop(returned);
+        drop(store);
+    }
 }
